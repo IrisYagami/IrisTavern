@@ -1,90 +1,976 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <base href="/">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, viewport-fit=cover, initial-scale=1, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="darkreader-lock">
-    <meta name="robots" content="noindex, nofollow" />
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, viewport-fit=cover, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Login</title>
     <style>
-        /* Put critical CSS here. The rest should go in stylesheets. */
-        body {
-            background-color: rgb(36, 36, 37);
+        :root {
+            --primary-color: #4a90e2;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, sans-serif;
+            position: relative;
+            background-color: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("img/background.jpg");
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.8);
+            z-index: 1;
+            opacity: 0;
+            /* 新增：开始时透明 */
+            transition: opacity 0.8s ease-in-out;
+            /* 新增：透明度变化时平滑过渡 */
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .left-section {
+            flex: 1;
+        }
+
+        .right-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(24, 26, 27, 0.58);
+            /* 深色半透明，毛玻璃效果 */
+            color: #fff;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+            position: relative;
+        }
+
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo {
+            width: 72px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            color: var(--text-color);
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: var(--input-bg);
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background: #357abd;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-section {
+                display: none;
+            }
+
+            .right-section {
+                flex: 1;
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .login-card {
+                padding: 1.75rem;
+            }
+
+            .background {
+                background-position: center 25%;
+            }
+        }
+
+        @supports (padding: max(0px)) {
+            .right-section {
+                padding: max(2rem, env(safe-area-inset-top)) max(2rem, env(safe-area-inset-right)) max(2rem, env(safe-area-inset-bottom)) max(2rem, env(safe-area-inset-left));
+            }
+        }
+
+        #shadow_popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+
+        #userList {
+            margin-bottom: 20px;
+        }
+
+        .userSelect {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            background: var(--input-bg);
+        }
+
+        .userSelect:hover {
+            background: var(--primary-color);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .userName {
+            color: var(--text-color);
+            margin-right: 10px;
+        }
+
+        .userHandle {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .user-card {
+            background: var(--input-bg);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-card:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto 0.5rem;
+        }
+
+        .user-name {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .error-message {
+            color: #ff4444;
+            background-color: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: rgba(255, 68, 68, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        input:disabled {
+            background-color: var(--input-bg);
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            /* 开关的宽度 */
+            height: 24px;
+            /* 开关的高度 */
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            /* 完全透明，隐藏原始的复选框 */
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider - the moving part */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            /* 关闭时的背景颜色 */
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            /* 圆点的高度 */
+            width: 16px;
+            /* 圆点的宽度 */
+            left: 4px;
+            /* 圆点距离左边的距离 */
+            bottom: 4px;
+            /* 圆点距离底部的距离 */
+            background-color: white;
+            /* 圆点的颜色 */
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+            /* 打开时的背景颜色 */
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(16px);
+            /* 打开时圆点向右移动的距离 */
+            -ms-transform: translateX(16px);
+            transform: translateX(16px);
+        }
+
+        /* Rounded sliders 圆角样式 */
+        .slider.round {
+            border-radius: 24px;
+            /* 让轨道变成圆角 */
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+            /* 让圆点变成圆形 */
+        }
+
+        .background-toggle-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            color: var(--primary-color);
+            z-index: 2;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            /* 移除默认 padding */
+        }
+
+        .background-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ... 你之前的背景切换按钮 (.background-toggle-btn) 样式 ... */
+
+        /* 通用样式：背景操作按钮 (换一张, 上传等) */
+        .background-action-btn {
+            position: fixed;
+            /* 固定位置 */
+            bottom: 20px;
+            /* 距离底部 20px */
+            right: 20px;
+            /* 距离左侧 70px (给开关留出空间) */
+            width: 44px;
+            /* 按钮宽度 */
+            height: 44px;
+            /* 按钮高度 */
+            border-radius: 50%;
+            /* 圆形 */
+            border: none;
+            /* 无边框 */
+            background: rgba(255, 255, 255, 0.1);
+            /* 背景颜色（半透明白色） */
+            cursor: pointer;
+            /* 鼠标样式 */
+            color: var(--primary-color);
+            /* 图标颜色 */
+            z-index: 10;
+            /* 确保在其他元素上方 */
+            transition: all 0.3s ease;
+            /* 添加过渡效果 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            /* 移除默认 padding */
+        }
+
+        .background-action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            /* 鼠标悬停时的背景颜色 */
+        }
+
+        /* 调整 SVG 图标的大小 */
+        .background-action-btn svg {
+            width: 20px;
+            /* 图标宽度 */
+            height: 20px;
+            /* 图标高度 */
+        }
+
+        /* 调整“换一张背景图”按钮的特定位置 */
+        #changeBackgroundBtn {
+            /* 它的位置已经由 .background-action-btn 定义了，
+                   如果你想单独调整它的 left 值，可以在这里写 */
+            /* left: 70px;  示例：如果需要调整 */
+        }
+
+        /* 如果你希望“上传背景图”按钮也采用类似风格，修改其 HTML，
+               并为其添加 .background-action-btn 类，然后调整其位置 */
+        #uploadBackgroundBtn.background-action-btn {
+            left: 120px;
+            /* 示例：放在“换一张”按钮右边，留出空间 */
+            /* 移除其原来的 margin-top 样式 */
+        }
+
+        /* 确保日夜切换按钮位置正确，与这些按钮对齐 */
+        .background-toggle-btn {
+            position: fixed;
+            /* 固定位置 */
+            bottom: 20px;
+            /* 距离底部 20px */
+            left: 20px;
+            /* 距离左侧 20px */
+            /* ... 其他样式 ... */
+        }
+
+        #togglePassword {
+            position: absolute;
+            right: 16px;
+            top: 42px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            z-index: 5;
+        }
+
+        #eyeIcon svg {
+            display: block;
+            width: 22px;
+            height: 22px;
+            color: #bbb;
+        }
+
+        #togglePassword:hover svg {
+            color: #fff;
+            stroke: #fff;
+            filter: drop-shadow(0 0 2px #4a90e2);
+        }
+
+        /* ... 你原来的 CSS 样式 ... */
     </style>
-    <link rel="preload" as="style" href="style.css">
-    <link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-icon-114x114.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="img/apple-icon-144x144.png" />
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" type="text/css" href="css/st-tailwind.css">
-    <link rel="stylesheet" type="text/css" href="css/login.css">
-    <link rel="manifest" crossorigin="use-credentials" href="manifest.json">
-    <link href="webfonts/NotoSans/stylesheet.css" rel="stylesheet">
-    <link href="webfonts/NotoSansMono/stylesheet.css" rel="stylesheet">
-    <!-- fontawesome webfonts-->
-    <link href="css/fontawesome.min.css" rel="stylesheet">
-    <link href="css/solid.min.css" rel="stylesheet">
-    <link href="css/user.css" rel="stylesheet">
-    <title>SillyTavern</title>
 </head>
 
-<body class="login">
-    <div id="shadow_popup" style="opacity: 0;">
-        <div id="dialogue_popup">
-            <div id="dialogue_popup_holder">
-                <div id="dialogue_popup_text">
-                    <div id="userSelectBlock" class="flex-container flexFlowColumn alignItemsCenter">
-                        <h2 id="logoBlock" class="flex-container">
-                            <img src="img/logo.png" alt="SillyTavern" class="logo">
-                            <span>Welcome to SillyTavern</span>
-                        </h2>
-                        <h3 id="normalLoginPrompt">
-                            Select an Account
-                        </h3>
-                        <h3 id="discreetLoginPrompt">
-                            Enter Login Details
-                        </h3>
-                        <div id="userListBlock" class="wide100p">
-                            <div id="userList" class="flex-container justifySpaceEvenly"></div>
-                            <div id="handleEntryBlock" style="display:none;" class="flex-container flexFlowColumn alignItemsCenter">
-                                <input id="userHandle" class="text_pole" type="text" placeholder="User handle" autocomplete="username">
-                            </div>
-                            <div id="passwordEntryBlock" style="display:none;"
-                                class="flex-container flexFlowColumn alignItemsCenter">
-                                <input id="userPassword" class="text_pole" type="password" placeholder="Password" autocomplete="current-password">
-                                <a id="recoverPassword" href="#" onclick="return false;">Forgot password?</a>
-                                <div class="flex-container">
-                                    <div id="loginButton" class="menu_button">Login</div>
-                                </div>
-                            </div>
-                            <div id="passwordRecoveryBlock" style="display:none;" class="flex-container flexFlowColumn alignItemsCenter">
-                                <div id="recoverMessage">
-                                    Recovery code has been posted to the server console.
-                                </div>
-                                <input id="recoveryCode" class="text_pole" type="text" placeholder="Recovery code">
-                                <input id="newPassword" class="text_pole" type="password" placeholder="New password" autocomplete="new-password">
-                                <div class="flex-container flexGap10">
-                                    <div id="sendRecovery" class="menu_button">Send</div>
-                                    <div id="cancelRecovery" class="menu_button">Cancel</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="neutral_warning" id="errorMessage">
-                        </div>
-                    </div>
+<body>
+    <div class="background"></div>
+    <div id="shadow_popup" style="opacity: 0"></div>
+    <div class="container">
+        <div class="left-section"></div>
+        <div class="right-section">
+            <div class="login-card">
+                <div class="logo-section">
+                    <img src="img/logo.png" alt="Logo" class="logo" />
+                    <h1>SillyTavern</h1>
+                    <p class="subtitle">登录以继续</p>
                 </div>
+
+                <!-- 登录表单 -->
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="userHandle">用户名</label>
+                        <input type="text" id="userHandle" class="form-input" placeholder="请输入用户名"
+                            autocomplete="username" />
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <label for="userPassword">密码</label>
+                        <input type="password" id="userPassword" class="form-input" placeholder="请输入密码"
+                            autocomplete="current-password" />
+                        <button type="button" id="togglePassword" tabindex="-1" style="
+                                    position: absolute;
+                                    right: 12px;
+                                    top: 39px;
+                                    background: none;
+                                    border: none;
+                                    outline: none;
+                                    cursor: pointer;
+                                    padding: 0;
+                                    z-index: 5;
+                                " aria-label="显示/隐藏密码">
+                            <span id="eyeIcon">
+                                <!-- 默认闭眼SVG -->
+                                <svg width="22" height="22" viewBox="0 0 256 256" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M234.35254,160.8125a12.00024,12.00024,0,1,1-20.78516,12l-16.2771-28.19189a127.01451,127.01451,0,0,1-29.36694,13.47021l5.18994,29.43164a11.99973,11.99973,0,1,1-23.63476,4.168l-5.053-28.6543a140.4304,140.4304,0,0,1-32.94116-.01074l-5.05176,28.65234a11.99973,11.99973,0,0,1-23.63477-4.168l5.19165-29.44483A127.0154,127.0154,0,0,1,58.665,144.59326L42.28125,172.9707a12.00024,12.00024,0,0,1-20.78516-12l17.85523-30.92578A153.16947,153.16947,0,0,1,22.665,112.416,11.99959,11.99959,0,0,1,41.333,97.334C57.05859,116.79785,84.8584,140,128,140c43.14063,0,70.94043-23.20215,86.666-42.666a11.99959,11.99959,0,1,1,18.668,15.082,153.08978,153.08978,0,0,1-16.72509,17.66406Z"
+                                        fill="#bbb" />
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                    <button type="button" id="loginButton" class="submit-btn">
+                        登录
+                    </button>
+                    <div class="form-group" style="text-align: center; margin-top: 1rem">
+                        <a href="#" id="recoverPassword" style="
+                                    color: var(--text-color);
+                                    text-decoration: none;
+                                ">
+                            忘记密码?
+                        </a>
+                    </div>
+                </form>
+
+                <!-- 找回密码区 -->
+                <form id="passwordRecoveryBlock" style="display: none">
+                    <div class="form-group">
+                        <label for="userHandleRecovery">Username</label>
+                        <input type="text" id="userHandleRecovery" class="form-input" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label for="recoveryCode">验证码</label>
+                        <input type="text" id="recoveryCode" class="form-input" placeholder="请输入验证码" />
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">新密码</label>
+                        <input type="password" id="newPassword" class="form-input" placeholder="请输入新密码" />
+                    </div>
+                    <button type="button" id="sendRecovery" class="submit-btn">
+                        重置密码
+                    </button>
+                    <div class="form-group" style="text-align: center; margin-top: 1rem">
+                        <a href="#" id="backToLogin" style="
+                                    color: var(--text-color);
+                                    text-decoration: none;
+                                ">
+                            返回登录
+                        </a>
+                    </div>
+                </form>
+                <button type="button" id="changeBackgroundBtn" class="background-action-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <path fill="#ffffff"
+                            d="M111.8 62.2C170.2 105.9 233 194.7 256 242.4c23-47.6 85.8-136.4 144.2-180.2c42.1-31.6 110.3-56 110.3 21.8c0 15.5-8.9 130.5-14.1 149.2C478.2 298 412 314.6 353.1 304.5c102.9 17.5 129.1 75.5 72.5 133.5c-107.4 110.2-154.3-27.6-166.3-62.9l0 0c-1.7-4.9-2.6-7.8-3.3-7.8s-1.6 3-3.3 7.8l0 0c-12 35.3-59 173.1-166.3 62.9c-56.5-58-30.4-116 72.5-133.5C100 314.6 33.8 298 15.7 233.1C10.4 214.4 1.5 99.4 1.5 83.9c0-77.8 68.2-53.4 110.3-21.8z" />
+                    </svg>
+                </button>
+                <button class="background-toggle-btn" id="backgroundToggleBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"
+                        viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <path fill="#ffffff"
+                            d="M375.7 19.7c-1.5-8-6.9-14.7-14.4-17.8s-16.1-2.2-22.8 2.4L256 61.1 173.5 4.2c-6.7-4.6-15.3-5.5-22.8-2.4s-12.9 9.8-14.4 17.8l-18.1 98.5L19.7 136.3c-8 1.5-14.7 6.9-17.8 14.4s-2.2 16.1 2.4 22.8L61.1 256 4.2 338.5c-4.6 6.7-5.5 15.3-2.4 22.8s9.8 13 17.8 14.4l98.5 18.1 18.1 98.5c1.5 8 6.9 14.7 14.4 17.8s16.1 2.2 22.8-2.4L256 450.9l82.5 56.9c6.7 4.6 15.3 5.5 22.8 2.4s12.9-9.8 14.4-17.8l18.1-98.5 98.5-18.1c8-1.5 14.7-6.9 17.8-14.4s2.2-16.1-2.4-22.8L450.9 256l56.9-82.5c4.6-6.7 5.5-15.3 2.4-22.8s-9.8-12.9-17.8-14.4l-98.5-18.1L375.7 19.7zM269.6 110l65.6-45.2 14.4 78.3c1.8 9.8 9.5 17.5 19.3 19.3l78.3 14.4L402 242.4c-5.7 8.2-5.7 19 0 27.2l45.2 65.6-78.3 14.4c-9.8 1.8-17.5 9.5-19.3 19.3l-14.4 78.3L269.6 402c-8.2-5.7-19-5.7-27.2 0l-65.6 45.2-14.4-78.3c-1.8-9.8-9.5-17.5-19.3-19.3L64.8 335.2 110 269.6c5.7-8.2 5.7-19 0-27.2L64.8 176.8l78.3-14.4c9.8-1.8 17.5-9.5 19.3-19.3l14.4-78.3L242.4 110c8.2 5.7 19 5.7 27.2 0zM256 368a112 112 0 1 0 0-224 112 112 0 1 0 0 224zM192 256a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z">
+                        </path>
+                    </svg>
+                </button>
+                <div class="toast-container"></div>
+                <div class="toast-container"></div>
             </div>
         </div>
     </div>
 
+    <div class="toast-container"></div>
+
     <script src="lib/jquery-3.5.1.min.js"></script>
     <script src="scripts/login.js"></script>
+    <script>
+        $(document).ready(function () {
+            // --- 背景图根据开关切换 (纯前端，硬编码图片列表) 的代码开始 ---
+
+            const backgroundDiv = document.querySelector('.background'); // 找到设置背景的那个 div
+            const changeButton = document.getElementById('changeBackgroundBtn'); // 找到“换一张背景图”按钮
+            // const backgroundToggle = document.getElementById('backgroundToggle'); // 删除旧开关的引用
+            const backgroundToggleBtn = document.getElementById('backgroundToggleBtn'); // 找到我们新的背景切换按钮
+            const uploadButton = document.getElementById('uploadBackgroundBtn'); // 找到上传图片的按钮
+            const fileInput = document.getElementById('backgroundFileInput'); // 找到隐藏的文件输入框
+
+
+            // **把这里的图片路径换成你自己的图片文件名和文件夹**
+            // 这些路径是相对于你的 login.html 文件的相对路径
+            const dayBackgrounds = [
+                'img/backgrounds_day/IMG_1.jpg',
+                'img/backgrounds_day/IMG_2.jpg',
+                // 添加更多白天的图片路径
+            ];
+
+            const nightBackgrounds = [
+                'img/backgrounds_night/IMG_1.jpg',
+                'img/backgrounds_night/IMG_2.jpg',
+                'img/backgrounds_night/IMG_3.jpg',
+                'img/backgrounds_night/IMG_4.jpg',
+                'img/backgrounds_night/IMG_5.jpg',
+                // 添加更多夜晚的图片路径
+            ];
+
+            let currentImageIndex = -1; // 用来记住当前显示的是哪张图片（在当前图片数组里的编号）
+            let activeBackgrounds = []; // 用来存放当前活动文件夹的图片列表 (指向 dayBackgrounds 或 nightBackgrounds)
+
+            let isDayMode = true; // 默认是白天模式
+
+            // SVG 图标的代码
+            const sunIcon = '<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#ffffff" d="M375.7 19.7c-1.5-8-6.9-14.7-14.4-17.8s-16.1-2.2-22.8 2.4L256 61.1 173.5 4.2c-6.7-4.6-15.3-5.5-22.8-2.4s-12.9 9.8-14.4 17.8l-18.1 98.5L19.7 136.3c-8 1.5-14.7 6.9-17.8 14.4s-2.2 16.1 2.4 22.8L61.1 256 4.2 338.5c-4.6 6.7-5.5 15.3-2.4 22.8s9.8 13 17.8 14.4l98.5 18.1 18.1 98.5c1.5 8 6.9 14.7 14.4 17.8s16.1 2.2 22.8-2.4L256 450.9l82.5 56.9c6.7 4.6 15.3 5.5 22.8 2.4s12.9-9.8 14.4-17.8l18.1-98.5 98.5-18.1c8-1.5 14.7-6.9 17.8-14.4s2.2-16.1-2.4-22.8L450.9 256l56.9-82.5c4.6-6.7 5.5-15.3 2.4-22.8s-9.8-12.9-17.8-14.4l-98.5-18.1L375.7 19.7zM269.6 110l65.6-45.2 14.4 78.3c1.8 9.8 9.5 17.5 19.3 19.3l78.3 14.4L402 242.4c-5.7 8.2-5.7 19 0 27.2l45.2 65.6-78.3 14.4c-9.8 1.8-17.5 9.5-19.3 19.3l-14.4 78.3L269.6 402c-8.2-5.7-19-5.7-27.2 0l-65.6 45.2-14.4-78.3c-1.8-9.8-9.5-17.5-19.3-19.3L64.8 335.2 110 269.6c5.7-8.2 5.7-19 0-27.2L64.8 176.8l78.3-14.4c9.8-1.8 17.5-9.5 19.3-19.3l14.4-78.3L242.4 110c8.2 5.7 19 5.7 27.2 0zM256 368a112 112 0 1 0 0-224 112 112 0 1 0 0 224zM192 256a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"></path></svg>';
+            const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#ffffff" d="M224 0c13.3 0 24 10.7 24 24l0 46.1 23-23c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-57 57 0 76.5 66.2-38.2 20.9-77.8c3.4-12.8 16.6-20.4 29.4-17s20.4 16.6 17 29.4L373 142.2l37.1-21.4c11.5-6.6 26.2-2.7 32.8 8.8s2.7 26.2-8.8 32.8L397 183.8l31.5 8.4c12.8 3.4 20.4 16.6 17 29.4s-16.6 20.4-29.4 17l-77.8-20.9L272 256l66.2 38.2 77.8-20.9c12.8-3.4 26 4.2 29.4 17s-4.2 26-17 29.4L397 328.2l37.1 21.4c11.5 6.6 15.4 21.3 8.8 32.8s-21.3 15.4-32.8 8.8L373 369.8l8.4 31.5c3.4 12.8-4.2 26-17 29.4s-26-4.2-29.4-17l-20.9-77.8L248 297.6l0 76.5 57 57c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-23-23 0 46.1c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-46.1-23 23c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l57-57 0-76.5-66.2 38.2-20.9 77.8c-3.4 12.8-16.6 20.4-29.4 17s-20.4-16.6-17-29.4L75 369.8 37.9 391.2c-11.5 6.6-26.2 2.7-32.8-8.8s-2.7-26.2 8.8-32.8L51 328.2l-31.5-8.4c-12.8-3.4-20.4-16.6-17-29.4s16.6-20.4 29.4-17l77.8 20.9L176 256l-66.2-38.2L31.9 238.6c-12.8 3.4-26-4.2-29.4-17s4.2-26 17-29.4L51 183.8 13.9 162.4c-11.5-6.6-15.4-21.3-8.8-32.8s21.3-15.4 32.8-8.8L75 142.2l-8.4-31.5c-3.4-12.8 4.2-26 17-29.4s26 4.2 29.4 17l20.9 77.8L200 214.4l0-76.5L143 81c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l23 23L200 24c0-13.3 10.7-24 24-24z"/></svg>';
+
+            // 函数：更新按钮图标
+            function updateToggleButtonIcon() {
+                if (backgroundToggleBtn) {
+                    backgroundToggleBtn.innerHTML = isDayMode ? sunIcon : moonIcon;
+                }
+            }
+
+
+            // 这个函数用来随机选一个图片编号，并且保证和当前的不同（在当前图片数组里）
+            function getRandomImageIndex() {
+                const currentImages = activeBackgrounds; // 获取当前正在使用的图片数组
+                if (currentImages.length === 0) {
+                    console.warn("当前图片列表为空！");
+                    return -1; // 没有图片就返回 -1
+                }
+                let newIndex;
+                // 当选到的编号和当前编号一样，或者当前图片数组只有一张时，就重新选
+                do {
+                    newIndex = Math.floor(Math.random() * currentImages.length);
+                } while (newIndex === currentImageIndex && currentImages.length > 1);
+                return newIndex;
+            }
+
+
+            // 这个函数用来设置背景图片并显示出来
+            function setRandomBackground() {
+                const currentImages = activeBackgrounds; // 获取当前正在使用的图片数组
+                if (currentImages.length === 0) {
+                    backgroundDiv.style.backgroundImage = 'none'; // 如果没有图片，就清空背景
+                    backgroundDiv.style.opacity = 1; // 清空背景后直接显示
+                    currentImageIndex = -1;
+                    return;
+                }
+                const nextIndex = getRandomImageIndex(); // 获取一个新的随机图片编号
+                if (nextIndex === -1) return; // 如果没有可用的图片索引，就不执行后续操作
+
+                const nextImageUrl = currentImages[nextIndex]; // 根据编号找到对应的图片路径
+
+                // 实现淡入淡出效果：先完全透明
+                backgroundDiv.style.opacity = 0;
+
+                // 等待一小段时间（让淡出效果完成），然后换图片，再慢慢显示出来
+                setTimeout(() => {
+                    // 更改背景图片
+                    backgroundDiv.style.backgroundImage = `url("${nextImageUrl}")`;
+                    currentImageIndex = nextIndex; // 更新当前图片编号
+
+                    // 慢慢显示出来
+                    backgroundDiv.style.opacity = 1;
+                }, 800); // 这里的 800ms 应该和你在CSS里设置的 transition 时间差不多
+            }
+
+            // --- 事件监听 ---
+
+            // 页面加载完成后，设置初始状态和背景
+            function initializePureFrontendBackground() {
+                isDayMode = true; // 默认是白天模式
+                updateToggleButtonIcon(); // 更新按钮图标为白天
+
+                activeBackgrounds = dayBackgrounds; // 初始使用白天的图片数组
+
+                setRandomBackground(); // 从白天的列表中设置初始背景
+            }
+
+            initializePureFrontendBackground(); // 页面加载时调用初始化函数
+
+
+            // 给新的背景切换按钮添加点击事件监听器
+            if (backgroundToggleBtn) { // 检查按钮是否存在
+                backgroundToggleBtn.addEventListener('click', function () {
+                    isDayMode = !isDayMode; // 切换模式状态
+                    updateToggleButtonIcon(); // 更新按钮图标
+
+                    // 根据新的模式状态选择对应的图片数组
+                    activeBackgrounds = isDayMode ? dayBackgrounds : nightBackgrounds;
+
+                    // 重置 currentImageIndex，确保切换模式后能从新文件夹随机选图
+                    currentImageIndex = -1;
+                    setRandomBackground(); // 从新的列表中设置背景
+                });
+            }
+
+            // 给“换一张背景图”按钮添加点击事件监听器
+            if (changeButton) { // 检查按钮是否存在
+                changeButton.addEventListener('click', setRandomBackground); // 这个函数现在会使用 activeBackgrounds
+            }
+
+            // --- 上传功能相关的事件监听器 (纯前端这部分只负责触发文件选择和准备数据) ---
+
+            // 当点击“上传背景图”按钮时，触发文件输入框的点击事件，弹出文件选择窗口
+            if (uploadButton && fileInput) {
+                uploadButton.addEventListener('click', function () {
+                    fileInput.click(); // 模拟点击隐藏的文件输入框
+                });
+
+                // 当用户选择了文件后，会触发文件输入框的 change 事件
+                fileInput.addEventListener('change', function () {
+                    const selectedFile = fileInput.files[0]; // 获取用户选择的第一个文件
+
+                    if (selectedFile) {
+                        // 用户选择了文件
+                        const targetFolder = isDayMode ? 'backgrounds_day' : 'backgrounds_night'; // 根据当前模式确定目标文件夹名称 (用于发送给后端)
+
+                        console.log("选择了文件:", selectedFile.name);
+                        console.log("目标文件夹 (发送给后端):", targetFolder);
+
+                        // *** ！！这里是纯前端无法直接保存文件的部分！！ ***
+                        // 你已经选择了文件，也知道了目标文件夹名称。
+                        // 但是，你需要一个服务器端程序来接收 selectedFile 的数据
+                        // 并根据 targetFolder 的值将文件保存到服务器上的对应文件夹里。
+
+                        // 以下是纯前端发送数据的示例代码，它需要服务器端有一个对应的接口来接收
+                        const formData = new FormData();
+                        formData.append('backgroundImage', selectedFile); // 'backgroundImage' 是服务器端用来获取文件的字段名
+                        formData.append('targetFolder', targetFolder); // 发送目标文件夹名称
+
+                        // **重要：这里的 '/upload-background' 需要替换为你实际的服务器端上传接口地址**
+                        // 如果你还没有设置后端，这部分代码发送请求不会有实际效果，
+                        // 浏览器控制台可能会显示网络错误。
+                        fetch('/upload-background', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    // 如果响应状态码不是 2xx，尝试读取错误信息
+                                    return response.text().then(text => { // 有些错误可能返回文本而不是 JSON
+                                        try {
+                                            const err = JSON.parse(text);
+                                            throw new Error(err.message || '上传失败');
+                                        } catch (e) {
+                                            throw new Error("上传请求失败：" + response.status + " " + response.statusText);
+                                        }
+                                    });
+
+                                }
+                                return response.json(); // 假设服务器返回 JSON 结果
+                            })
+                            .then(data => {
+                                console.log('上传成功响应:', data);
+                                displayError("图片上传请求已发送 (服务器需支持)", false); // 提示已发送请求
+                                // **注意：在纯前端方案中，图片上传成功后不会自动添加到当前列表并显示。**
+                                // 你需要在服务器端上传成功后，手动将图片放到对应的文件夹，
+                                // 然后刷新登录页面，JavaScript 重新加载后才会把新图片包含在随机切换的范围内。
+                            })
+                            .catch(error => {
+                                console.error('上传失败:', error);
+                                displayError("图片上传请求失败：" + error.message);
+                            });
+
+
+                    }
+
+                    // 清空文件输入框，以便下次选择同一文件时也能触发 change 事件
+                    fileInput.value = '';
+                });
+            }
+
+
+            // --- 背景图根据开关切换 (纯前端) 的代码结束 ---
+
+
+            // --- 你原来的登录和密码恢复的代码 ---
+
+            // 忘记密码按钮事件
+            $("#recoverPassword").click(async function (e) {
+                e.preventDefault();
+                const handle = $.trim($("#userHandle").val());
+
+                if (handle === "") {
+                    displayError("请输入用户名");
+                    return;
+                }
+
+                $("#userHandleRecovery").val(handle); // 这里的 username 似乎是笔误，应该用 handle
+                const failed = await sendRecoveryPart1(handle); // 假设 sendRecoveryPart1 函数存在
+                if (!failed) {
+                    $('#loginForm').hide();
+                    $('#passwordRecoveryBlock').show(); // 显示密码恢复区块
+                }
+            });
+
+
+            $('#sendRecovery').off('click').on('click', async () => {
+                const handle = String($("#userHandleRecovery").val()); // 注意这里获取的是 recovery block 的 username
+                const code = String($('#recoveryCode').val());
+                const newPassword = String($('#newPassword').val());
+                await sendRecoveryPart2(handle, code, newPassword); // 假设 sendRecoveryPart2 函数存在
+            });
+
+            // 返回登录按钮事件
+            $("#backToLogin").click(function (e) {
+                e.preventDefault();
+                $("#passwordRecoveryBlock").hide();
+                $("#loginForm").show();
+            });
+
+
+            // 登录按钮事件
+            $("#loginButton")
+                .off("click")
+                .on("click", async function () {
+                    const handle = $.trim($("#userHandle").val());
+                    const password = $.trim($("#userPassword").val());
+
+                    if (handle === "" || password === "") { // 修改判断条件，任一为空就提示
+                        displayError(
+                            "请确认用户名和密码正确" // 改成简体中文
+                        );
+                        return;
+                    }
+
+                    try {
+                        await performLogin(handle, password); // 假设 performLogin 函数存在
+                    } catch (error) {
+                        console.error("Login failed:", error);
+                        displayError(error.message);
+                    }
+                });
+            // --- 原来的登录和密码恢复的代码结束 ---
+
+
+            // 闭眼（不可见，默认状态）
+            const eyeClosedSvg = `
+<svg width="22" height="22" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M234.35254,160.8125a12.00024,12.00024,0,1,1-20.78516,12l-16.2771-28.19189a127.01451,127.01451,0,0,1-29.36694,13.47021l5.18994,29.43164a11.99973,11.99973,0,1,1-23.63476,4.168l-5.053-28.6543a140.4304,140.4304,0,0,1-32.94116-.01074l-5.05176,28.65234a11.99973,11.99973,0,0,1-23.63477-4.168l5.19165-29.44483A127.0154,127.0154,0,0,1,58.665,144.59326L42.28125,172.9707a12.00024,12.00024,0,0,1-20.78516-12l17.85523-30.92578A153.16947,153.16947,0,0,1,22.665,112.416,11.99959,11.99959,0,0,1,41.333,97.334C57.05859,116.79785,84.8584,140,128,140c43.14063,0,70.94043-23.20215,86.666-42.666a11.99959,11.99959,0,1,1,18.668,15.082,153.08978,153.08978,0,0,1-16.72509,17.66406Z"
+        fill="#bbb"/>
+</svg>
+`;
+
+            // 睁眼（可见）
+            const eyeOpenSvg = `
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M21.92,11.6C19.9,6.91,16.1,4,12,4S4.1,6.91,2.08,11.6a1,1,0,0,0,0,.8C4.1,17.09,7.9,20,12,20s7.9-2.91,9.92-7.6A1,1,0,0,0,21.92,11.6ZM12,18c-3.17,0-6.17-2.29-7.9-6C5.83,8.29,8.83,6,12,6s6.17,2.29,7.9,6C18.17,15.71,15.17,18,12,18ZM12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z"
+        fill="#bbb"/>
+</svg>
+`;
+
+            // 密码小眼睛
+            let isPasswordVisible = false;
+            $("#togglePassword").on("click", function () {
+                isPasswordVisible = !isPasswordVisible;
+                $("#userPassword").attr("type", isPasswordVisible ? "text" : "password");
+                $("#eyeIcon").html(isPasswordVisible ? eyeOpenSvg : eyeClosedSvg);
+            });
+        });
+
+        // displayError 函数 (增加一个参数来控制颜色)
+        function displayError(message, isError = true) {
+            if (!message || message.trim() === "") {
+                return;
+            }
+
+            const container = $(".toast-container");
+            const toast = $(`
+                <div class="toast" style="background-color: ${isError ? 'rgba(255, 68, 68, 0.9)' : 'rgba(68, 255, 68, 0.9)'};"> <div class="toast-content">
+                        <span class="toast-message">${message}</span>
+                        <span class="toast-close">&times;</span>
+                    </div>
+                </div>
+            `);
+
+            container.append(toast);
+
+            toast.find(".toast-close").click(() => {
+                toast.remove();
+            });
+
+            setTimeout(() => {
+                toast.fadeOut(() => toast.remove());
+            }, 3000); // 3秒后消失
+        }
+
+        // 确保你的 login, recovery 函数都在 $(document).ready 内部或者可以在这里访问到
+        // ... (之前的登录恢复函数代码，通常在 $(document).ready 的大括号里定义)
+
+    </script>
 </body>
 
 </html>
