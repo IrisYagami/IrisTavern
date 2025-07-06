@@ -449,16 +449,36 @@ export async function getBackgrounds() {
         headers: getRequestHeaders(),
         body: JSON.stringify({}),
     });
-    if (response.ok) {
-        const { images, config } = await response.json();
-        Object.assign(THUMBNAIL_CONFIG, config);
-        $('#bg_menu_content').children('div').remove();
-        for (const bg of images) {
-            const template = await getBackgroundFromTemplate(bg, false);
-            $('#bg_menu_content').append(template);
-        }
-        activateLazyLoader();
+
+    const responseData = await response.json();
+
+    // 如果响应是一个数组，表示缺少 config，手动构建一个对象结构
+    let images = Array.isArray(responseData) ? responseData : responseData?.images || [];
+    let config = responseData?.config || {
+        width: 160,    // 默认配置，适配宽度
+        height: 90,    // 默认配置，适配高度
+    };
+
+    // 如果 config 为空，确保设置默认值
+    if (!config) {
+        config = {
+            width: 160,
+            height: 90,
+        };
     }
+
+    // 将 config 合并到 THUMBNAIL_CONFIG 中
+    Object.assign(THUMBNAIL_CONFIG, config);
+
+    $('#bg_menu_content').children('div').remove();
+    
+    // 使用新的 images 数组生成模板
+    for (const bg of images) {
+        const template = await getBackgroundFromTemplate(bg, false);
+        $('#bg_menu_content').append(template);
+    }
+
+    activateLazyLoader();
 }
 
 function activateLazyLoader() {
