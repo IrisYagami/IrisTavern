@@ -289,3 +289,7 @@ function configureDiscreetLogin() {
         }
     });
 })();
+
+// Expose functions to window for legacy/custom HTML compatibility
+window.performLogin = performLogin;
+window.displayError = displayError;
